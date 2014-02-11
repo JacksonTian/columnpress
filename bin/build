@@ -9,6 +9,7 @@ var ncp = require('ncp');
 var mkdirp = require('mkdirp');
 var marked = require('marked');
 var ejs = require('ejs');
+var helper = require('../lib/helper');
 
 marked.setOptions({
   highlight: function (code) {
@@ -16,16 +17,6 @@ marked.setOptions({
   }
 });
 
-var extend = function () {
-  var ret = {};
-  for (var i = 0; i < arguments.length; i++) {
-    var obj = arguments[i];
-    for (var key in obj) {
-      ret[key] = obj[key];
-    }
-  }
-  return ret;
-};
 var pkg;
 try {
   pkg = require(path.join(cwd, 'column.json'));
@@ -56,10 +47,10 @@ markdowns.forEach(function (filename) {
   var html = marked(fs.readFileSync(markdown, 'utf-8'));
 
   var basename = path.basename(filename, path.extname(filename));
-  var output = ejs.render(articleTpl, extend({
+  var output = ejs.render(articleTpl, helper.extend({
     title: filename,
     html: html,
-    filename: '../tpl/article.tpl'
+    filename: path.join(__dirname, '../tpl/article.tpl')
   }, pkg));
 
   var article = path.join(htmldir, basename + '.html');
@@ -73,9 +64,9 @@ var articles = markdowns.map(function (filename) {
 });
 
 var home = path.join(htmldir, '../index.html');
-fs.writeFileSync(home, ejs.render(homeTpl, extend({
+fs.writeFileSync(home, ejs.render(homeTpl, helper.extend({
   articles: articles,
-  filename: '../tpl/index.tpl'
+  filename: path.join(__dirname, '../tpl/index.tpl')
 }, pkg)));
 
 console.log(markdowns);

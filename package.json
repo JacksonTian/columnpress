@@ -1,6 +1,6 @@
 {
   "name": "columnpress",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Column for writting",
   "main": "index.js",
   "scripts": {
