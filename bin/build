@@ -1,0 +1,68 @@
+#!/usr/bin/env node
+
+
+
+var fs = require('fs');
+var path = require('path');
+
+var ncp = require('ncp');
+var mkdirp = require('mkdirp');
+var marked = require('marked');
+var ejs = require('ejs');
+
+marked.setOptions({
+  highlight: function (code) {
+    return require('highlight.js').highlightAuto(code).value;
+  }
+});
+
+var docdir = path.join(__dirname, '../doc');
+var htmldir = path.join(__dirname, '../wwwroot/articles');
+mkdirp.sync(htmldir);
+
+var tpldir = path.join(__dirname, '../tpl');
+var assetdir = path.join(__dirname, '../wwwroot/assets');
+mkdirp.sync(assetdir);
+
+var files = fs.readdirSync(docdir);
+var markdowns = files.filter(function (filename) {
+  var ext = path.extname(filename);
+  return ext === '.md';
+});
+
+var articleTpl = fs.readFileSync(path.join(tpldir, 'article.tpl'), 'utf-8');
+var homeTpl = fs.readFileSync(path.join(tpldir, 'index.tpl'), 'utf-8');
+
+markdowns.forEach(function (filename) {
+  var markdown = path.join(docdir, filename);
+  var html = marked(fs.readFileSync(markdown, 'utf-8'));
+
+  var basename = path.basename(filename, path.extname(filename));
+  var output = ejs.render(articleTpl, {
+    title: filename,
+    html: html
+  });
+
+  var article = path.join(htmldir, basename + '.html');
+  fs.writeFileSync(article, output);
+});
+
+var articles = markdowns.map(function (filename) {
+  return {
+    title: path.basename(filename, path.extname(filename))
+  };
+});
+
+var home = path.join(htmldir, '../index.html');
+fs.writeFileSync(home, ejs.render(homeTpl, {
+  articles: articles
+}));
+
+console.log(markdowns);
+
+ncp(path.join(tpldir, 'assets'), assetdir, function (err) {
+  if (err) {
+    return console.error(err);
+  }
+  console.log('done!');
+});
