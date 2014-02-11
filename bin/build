@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-
+var cwd = process.cwd();
 
 var fs = require('fs');
 var path = require('path');
@@ -16,32 +16,51 @@ marked.setOptions({
   }
 });
 
-var docdir = path.join(__dirname, '../doc');
-var htmldir = path.join(__dirname, '../wwwroot/articles');
+var extend = function () {
+  var ret = {};
+  for (var i = 0; i < arguments.length; i++) {
+    var obj = arguments[i];
+    for (var key in obj) {
+      ret[key] = obj[key];
+    }
+  }
+  return ret;
+};
+var pkg;
+try {
+  pkg = require(path.join(cwd, 'column.json'));
+} catch (ex) {
+  console.log('column.json 文件有误');
+  process.exit(1);
+}
+
+var docdir = path.join(cwd, 'doc');
+var htmldir = path.join(cwd, 'articles');
 mkdirp.sync(htmldir);
 
-var tpldir = path.join(__dirname, '../tpl');
-var assetdir = path.join(__dirname, '../wwwroot/assets');
+var assetdir = path.join(cwd, 'assets');
 mkdirp.sync(assetdir);
 
+var tpldir = path.join(__dirname, '../tpl');
+var articleTpl = fs.readFileSync(path.join(tpldir, 'article.tpl'), 'utf-8');
+var homeTpl = fs.readFileSync(path.join(tpldir, 'index.tpl'), 'utf-8');
+
+// filter markdown files
 var files = fs.readdirSync(docdir);
 var markdowns = files.filter(function (filename) {
   var ext = path.extname(filename);
   return ext === '.md';
 });
-
-var articleTpl = fs.readFileSync(path.join(tpldir, 'article.tpl'), 'utf-8');
-var homeTpl = fs.readFileSync(path.join(tpldir, 'index.tpl'), 'utf-8');
-
 markdowns.forEach(function (filename) {
   var markdown = path.join(docdir, filename);
   var html = marked(fs.readFileSync(markdown, 'utf-8'));
 
   var basename = path.basename(filename, path.extname(filename));
-  var output = ejs.render(articleTpl, {
+  var output = ejs.render(articleTpl, extend({
     title: filename,
-    html: html
-  });
+    html: html,
+    filename: '../tpl/article.tpl'
+  }, pkg));
 
   var article = path.join(htmldir, basename + '.html');
   fs.writeFileSync(article, output);
@@ -54,9 +73,10 @@ var articles = markdowns.map(function (filename) {
 });
 
 var home = path.join(htmldir, '../index.html');
-fs.writeFileSync(home, ejs.render(homeTpl, {
-  articles: articles
-}));
+fs.writeFileSync(home, ejs.render(homeTpl, extend({
+  articles: articles,
+  filename: '../tpl/index.tpl'
+}, pkg)));
 
 console.log(markdowns);
 
