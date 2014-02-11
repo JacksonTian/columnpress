@@ -1,7 +1,16 @@
-drummer
+Column
 =======
 
-构思一个项目来管理github上托管的多个repository，就像鼓手的演奏一般
+个人Markdown写作工具
 
-## 思路
-基于[Github API](http://developer.github.com/)，要完成此事并不难。关键是如何呈现和组织。求fork和pull request。
+## Usage
+
+```bash
+$ npm install column -g
+$ mkdir your_wwwroot
+$ cd your_wwwroot
+$ column init # 将创建doc目录
+```
+
+## License
+The MIT License
