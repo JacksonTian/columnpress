@@ -1,15 +1,16 @@
 #!/usr/bin/env node
-
-var cwd = process.cwd();
-
+// 依赖
 var fs = require('fs');
 var path = require('path');
-
+var han = require('han');
 var ncp = require('ncp');
 var mkdirp = require('mkdirp');
 var marked = require('marked');
 var ejs = require('ejs');
 var helper = require('../lib/helper');
+
+// 当前执行目录
+var cwd = process.cwd();
 
 marked.setOptions({
   highlight: function (code) {
@@ -19,9 +20,9 @@ marked.setOptions({
 
 var pkg;
 try {
-  pkg = require(path.join(cwd, 'column.json'));
+  pkg = require(path.join(cwd, 'columnpress.json'));
 } catch (ex) {
-  console.log('column.json 文件有误');
+  console.log('columnpress.json 文件有误');
   process.exit(1);
 }
 
@@ -36,41 +37,62 @@ var tpldir = path.join(__dirname, '../tpl');
 var articleTpl = fs.readFileSync(path.join(tpldir, 'article.tpl'), 'utf-8');
 var homeTpl = fs.readFileSync(path.join(tpldir, 'index.tpl'), 'utf-8');
 
-// filter markdown files
-var files = fs.readdirSync(docdir);
-var markdowns = files.filter(function (filename) {
-  var ext = path.extname(filename);
-  return ext === '.md';
-});
-markdowns.forEach(function (filename) {
-  var markdown = path.join(docdir, filename);
-  var html = marked(fs.readFileSync(markdown, 'utf-8'));
+// get markdowns
+var getMarkdowns = function (docdir) {
+  // filter markdown files
+  var files = fs.readdirSync(docdir);
+  var markdowns = files.filter(function (filename) {
+    var ext = path.extname(filename);
+    return ext === '.md' || ext === '.markdown';
+  })
+  // 按日期倒序
+  .reverse()
+  // 抽取详细值
+  .map(function (filename) {
+    var markdown = path.join(docdir, filename);
+    var article = marked(fs.readFileSync(markdown, 'utf-8'));
+    var title = path.basename(filename, path.extname(filename));
+    // 抽取时间
+    var matched = title.match(/(\d{4})(\d{2})(\d{2})_/);
+    var year = parseInt(matched[1], 10);
+    var month = parseInt(matched[2], 10) - 1;
+    var day = parseInt(matched[3], 10);
+    var date = new Date(year, month, day);
+    // 去掉时间部分
+    title = title.substring(9);
 
-  var basename = path.basename(filename, path.extname(filename));
-  var output = ejs.render(articleTpl, helper.extend({
-    title: filename,
-    html: html,
+    return {
+      date: date,
+      title: title,
+      article: article,
+      html: han.letter(title, '-') + '.html'
+    };
+  });
+
+  return markdowns;
+};
+
+var markdowns = getMarkdowns(docdir);
+
+// 生成每个文章页
+markdowns.forEach(function (item) {
+  var output = ejs.render(articleTpl, helper.extend(item, {
     filename: path.join(__dirname, '../tpl/article.tpl')
   }, pkg));
 
-  var article = path.join(htmldir, basename + '.html');
+  var article = path.join(htmldir, item.html);
   fs.writeFileSync(article, output);
 });
 
-var articles = markdowns.map(function (filename) {
-  return {
-    title: path.basename(filename, path.extname(filename))
-  };
-});
-
+// 生成主页
 var home = path.join(htmldir, '../index.html');
 fs.writeFileSync(home, ejs.render(homeTpl, helper.extend({
-  articles: articles,
+  articles: markdowns,
+  title: 'Home',
   filename: path.join(__dirname, '../tpl/index.tpl')
 }, pkg)));
 
-console.log(markdowns);
-
+// 拷贝静态文件
 ncp(path.join(tpldir, 'assets'), assetdir, function (err) {
   if (err) {
     return console.error(err);

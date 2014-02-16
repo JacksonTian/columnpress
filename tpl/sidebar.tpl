@@ -1,11 +1,21 @@
 <div class="sidebar-module sidebar-module-inset">
   <h4>About</h4>
-  <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
+  <p><%=about%></p>
 </div>
 
 <div class="sidebar-module">
   <h4>友情链接</h4>
   <ol class="list-unstyled">
-    <li><a href="http://github.com/JacksonTian">Jackson's GitHub</a></li>
+  <% links.forEach(function (item) { %>
+    <li>
+      <a href="<%=item.link%>" target="_blank">
+      <% if (item.logo) { %>
+        <img src="<%=item.logo%>" alt="<%=item.title%>" />
+      <% } else { %>
+        <%=item.title%>
+      <% } %>
+      </a>
+    </li>
+  <% }); %>
   </ol>
 </div>
