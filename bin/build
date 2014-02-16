@@ -54,12 +54,17 @@ var getMarkdowns = function (docdir) {
     var title = path.basename(filename, path.extname(filename));
     // 抽取时间
     var matched = title.match(/(\d{4})(\d{2})(\d{2})_/);
-    var year = parseInt(matched[1], 10);
-    var month = parseInt(matched[2], 10) - 1;
-    var day = parseInt(matched[3], 10);
-    var date = new Date(year, month, day);
-    // 去掉时间部分
-    title = title.substring(9);
+    var date;
+    if (matched) {
+      var year = parseInt(matched[1], 10);
+      var month = parseInt(matched[2], 10) - 1;
+      var day = parseInt(matched[3], 10);
+      date = new Date(year, month, day);
+      // 去掉时间部分
+      title = title.substring(9);
+    } else {
+      date = '';
+    }
 
     return {
       date: date,

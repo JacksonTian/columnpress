@@ -14,13 +14,13 @@
         <div class="col-sm-8 column-main">
         <% articles.forEach(function (item) { %>
           <div class="column-post">
-            <h2 class="column-post-title">
+            <h1 class="column-post-title">
               <a href="articles/<%=item.html%>">
                 <%=item.title%>
               </a>
-            </h2>
+            </h1>
             <p class="column-post-meta">
-              <%=item.date.toDateString()%>
+              <%=item.date ? item.date.toDateString() : ""%>
             </p>
             <%-item.article%>
           </div>

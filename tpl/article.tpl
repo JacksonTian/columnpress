@@ -13,6 +13,12 @@
       <div class="row">
         <div class="col-sm-8 blog-main">
           <div class="article">
+            <h1 class="column-post-title">
+              <%=title%>
+            </h1>
+            <p class="column-post-meta">
+              <%=locals.date ? locals.date.toDateString() : ""%>
+            </p>
             <%-article%>
           </div>
           <% include disqus.tpl %>
