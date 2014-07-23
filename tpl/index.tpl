@@ -11,7 +11,7 @@
       <% include header.tpl %>
 
       <div class="row">
-        <div class="col-sm-8 column-main">
+        <div class="col-sm-9 column-main">
         <% articles.forEach(function (item) { %>
           <div class="column-post">
             <h1 class="column-post-title">
@@ -27,7 +27,7 @@
         <% });%>
           <% include disqus.tpl %>
         </div>
-        <div class="col-sm-3 col-sm-offset-1 column-sidebar">
+        <div class="col-sm-3 column-sidebar">
           <% include sidebar.tpl %>
         </div>
       </div>

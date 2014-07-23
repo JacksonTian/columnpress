@@ -27,6 +27,10 @@ try {
 }
 
 var docdir = path.join(cwd, 'doc');
+if (!fs.existsSync(docdir)) {
+  console.log('没有doc目录');
+  process.exit(1);
+}
 var htmldir = path.join(cwd, 'articles');
 mkdirp.sync(htmldir);
 

@@ -11,7 +11,7 @@
       <% include header.tpl %>
 
       <div class="row">
-        <div class="col-sm-8 blog-main">
+        <div class="col-sm-9 blog-main">
           <div class="article">
             <h1 class="column-post-title">
               <%=title%>
@@ -23,7 +23,7 @@
           </div>
           <% include disqus.tpl %>
         </div>
-        <div class="col-sm-3 col-sm-offset-1 column-sidebar">
+        <div class="col-sm-3 column-sidebar">
           <% include sidebar.tpl %>
         </div>
       </div>
