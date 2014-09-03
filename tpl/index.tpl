@@ -22,7 +22,7 @@
             <p class="column-post-meta">
               <%=item.date ? item.date.toDateString() : ""%>
             </p>
-            <%-item.article%>
+            <%-item.summary%>
           </div>
         <% });%>
           <% include disqus.tpl %>

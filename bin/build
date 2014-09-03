@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 // 依赖
 var fs = require('fs');
 var path = require('path');
@@ -54,7 +55,7 @@ var getMarkdowns = function (docdir) {
   // 抽取详细值
   .map(function (filename) {
     var markdown = path.join(docdir, filename);
-    var article = marked(fs.readFileSync(markdown, 'utf-8'));
+    var content = fs.readFileSync(markdown, 'utf-8');
     var title = path.basename(filename, path.extname(filename));
     // 抽取时间
     var matched = title.match(/(\d{4})(\d{2})(\d{2})_/);
@@ -73,7 +74,8 @@ var getMarkdowns = function (docdir) {
     return {
       date: date,
       title: title,
-      article: article,
+      article: marked(content),
+      summary: marked(helper.getSummary(content)),
       html: han.letter(title, '-') + '.html'
     };
   });
