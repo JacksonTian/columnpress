@@ -8,5 +8,5 @@
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="/assets/scripts/jquery-1.10.2.min.js"></script>
-<script src="/assets/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+<script src="<%-locals.prefix || ''%>/assets/scripts/jquery-1.10.2.min.js"></script>
+<script src="<%-locals.prefix || ''%>/assets/bootstrap-3.1.0/js/bootstrap.min.js"></script>

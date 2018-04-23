@@ -20,12 +20,12 @@
   },
   "homepage": "https://github.com/JacksonTian/columnpress",
   "dependencies": {
-    "ejs": "~0.8.5",
-    "marked": "~0.3.1",
+    "ejs": "^0.8.8",
+    "han": "*",
     "highlight.js": "~8.0.0",
+    "marked": "~0.3.1",
     "mkdirp": "~0.3.5",
-    "ncp": "~0.5.0",
-    "han": "*"
+    "ncp": "~0.5.0"
   },
   "devDependencies": {},
   "keywords": [

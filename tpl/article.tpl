@@ -11,7 +11,7 @@
       <% include header.tpl %>
 
       <div class="row">
-        <div class="col-sm-9 blog-main">
+        <div class="col-sm-9 column-main">
           <div class="article">
             <h1 class="column-post-title">
               <%=title%>
