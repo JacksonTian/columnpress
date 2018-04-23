@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/JacksonTian/columnpress",
   "dependencies": {
-    "ejs": "^0.8.8",
+    "ejs": "^2.5.9",
     "han": "*",
     "highlight.js": "~8.0.0",
     "marked": "~0.3.1",
